@@ -1,0 +1,8 @@
+{
+  "name": "vote-button",
+  "version": "1.0.0",
+  "dependencies": {
+    "jquery": "latest",
+    "snap.svg": "latest"
+  }
+}
