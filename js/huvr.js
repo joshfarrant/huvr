@@ -69,6 +69,11 @@ function buildButton(radius) {
     transform: 'translate(' + d.tickPos + ', ' + d.tickPos + ') scale(' + d.tickScale + ', ' + d.tickScale + ')'
   };
 
+  // Default attribues for explode circle
+  explodeAttrs = ({
+    fill: 'transparent'
+  });
+
   // Default attribues for the hidden overlay circle
   // Used to detect mouseover & touch events
   overlayAttrs = {
@@ -79,24 +84,23 @@ function buildButton(radius) {
   // Creates a Snap SVG element
   s = Snap(d.total, d.total);
 
-  // Create basic SVGs
-  // Defined in order of ascending z-index
+  // Create basic SVGs defined in order of ascending z-index
   outline = s.circle(d.half, d.half, outlineAttrs.r);
   inner   = s.circle(d.half, d.half, innerAttrs.r);
-  // var tick    = s.path('M117.5,132.5 L107.5,122.5 L102.5,127.5 L117.5,142.5 L147.5,112.5 L142.5,107.5 Z');
   tick    = s.path('M-7.5,7.5 L-17.5,-2.5 L-23.5,2.5 L-7.5,17.5 L22.5,-12.5 L17.5,-17.5 Z');
+  explode = s.circle(d.half, d.half, 0);
   overlay = s.circle(d.half, d.half, overlayAttrs.r);
 
   // Assign default attributes to each of the SVGs
   outline.attr(outlineAttrs);
   inner.attr(innerAttrs);
   tick.attr(tickAttrs);
+  explode.attr(explodeAttrs);
   overlay.attr(overlayAttrs);
-
 
   // Handles mouseover and mouseout events on the transparent overlay circle
   overlay.mouseover(function() {
-
+    console.log('mouseover');
     // Returns the function if device is touch enabled
     // Used to prevent rogue mouseover events firing on touch devices
     if (touchEnabled) {
@@ -108,7 +112,7 @@ function buildButton(radius) {
     voteTimeout = beginVote();
 
   }).mouseout(function() {
-
+    console.log('mouseout');
     // Returns the function if device is touch enabled
     // Used to prevent rogue mouseover events firing on touch devices
     if (touchEnabled) {
@@ -128,7 +132,7 @@ function buildButton(radius) {
 
   // Handles touchstart and touchend events on the transparent overlay circle
   overlay.touchstart(function() {
-
+    console.log('touchstart');
     // Sets touchEnabled to true as a touch event has been registered
     touchEnabled = true;
 
@@ -137,7 +141,7 @@ function buildButton(radius) {
     voteTimeout = beginVote();
 
   }).touchend(function() {
-
+    console.log('touchend');
     // Sets touchEnabled to true as a touch event has been registered
     touchEnabled = true;
 
@@ -201,8 +205,7 @@ function submitVote() {
   console.log('Vote submitted!');
 
   // Creates explode SVG and sets default attributes
-  explode = s.circle(d.half, d.half, 0).attr({
-    fill: 'transparent',
+  explode.attr({
     stroke: '#fff',
     strokeOpacity: 0.4,
     strokeWidth: d.stroke
@@ -285,27 +288,17 @@ function resetVote(timeout) {
     fill: defaultAttrs.completionColor
   }, defaultAttrs.elasticTime, mina.elastic);
 
-  // Very quickly fades explode circle out, before removing it completely
+  // Very quickly fades explode circle out, before hiding
   explode.animate({
     strokeOpacity: 0
   }, defaultAttrs.resetTime, mina.linear, function() {
 
-    explode.remove();
+    explode.attr({
+      r: 0
+    });
 
   });
 
 }
 
-$.fn.huvr = function(radius) {
-  buildButton(radius);
-}
-
-$('body').huvr(125);
-
-// $('#voteButton').huvr({
-//   radius: 125,
-//   color: '#2ecc71',
-//   success: function() {
-//     alert('Vote submitted!');
-//   }
-// });
+buildButton(125);

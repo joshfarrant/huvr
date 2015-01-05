@@ -2,7 +2,6 @@
   "name": "huvr",
   "version": "1.0.0",
   "dependencies": {
-    "jquery": "latest",
     "snap.svg": "latest"
   }
 }
